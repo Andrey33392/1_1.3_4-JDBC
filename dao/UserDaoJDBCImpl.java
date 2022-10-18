@@ -38,27 +38,35 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public void dropUsersTable() {
-        try (Statement statement = connection.createStatement()) {
+    public void dropUsersTable() throws SQLException {
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            connection.setAutoCommit(false);
             statement.executeUpdate("DROP TABLE IF EXISTS user");
+            connection.commit();
+            connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            connection.rollback();
+
         }
 
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT into user (name, lastName, age) VALUES (?, ?, ?)")) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement("INSERT into user (name, lastName, age) VALUES (?, ?, ?)");
             connection.setAutoCommit(false);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
-            connection.commit();
             preparedStatement.executeUpdate();
+            connection.commit();
+            connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            connection.rollback();
         }
 
 
@@ -77,10 +85,12 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
-        try (ResultSet resultSet = connection.createStatement().executeQuery("SELECT  * FROM user")) {
-          connection.setAutoCommit(false);
+        ResultSet resultSet;
+        try {
+            resultSet = connection.createStatement().executeQuery("SELECT  * FROM user");
+            connection.setAutoCommit(false);
             while (resultSet.next()) {
                 User user = new User(resultSet.getString("name"),
                         resultSet.getString("lastName"),
@@ -89,8 +99,9 @@ public class UserDaoJDBCImpl implements UserDao {
                 users.add(user);
             }
             connection.commit();
+            connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            connection.rollback();
         }
         return users;
     }

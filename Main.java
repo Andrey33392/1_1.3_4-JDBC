@@ -4,9 +4,11 @@ import service.UserService;
 import service.UserServiceImpl;
 import userModel.User;
 
+import java.sql.SQLException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         UserService userService = new UserServiceImpl();
 
@@ -15,7 +17,7 @@ public class Main {
         User user3 = new User("Tom", "Anderson", (byte) 65);
         User user4 = new User("Max", "Barskih", (byte) 45);
 
-       userService.creatUsersTable();
+//       userService.creatUsersTable();
        userService.saveUser(user1.getName(), user1.getLastName(), user1.getAge());
 
         userService.saveUser(user2.getName(), user2.getLastName(), user2.getAge());
@@ -24,7 +26,7 @@ public class Main {
         userService.getAllUsers();
 //        userService.removeUserById(5);
 //        userService.cleanUsersTable();
-//        userService.dropUsersTable();
+        userService.dropUsersTable();
 
 
     }

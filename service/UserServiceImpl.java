@@ -4,6 +4,7 @@ import userModel.User;
 import dao.UserDao;
 import dao.UserDaoJDBCImpl;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -17,12 +18,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void dropUsersTable() {
+    public void dropUsersTable() throws SQLException {
         userDao.dropUsersTable();
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
 
         userDao.saveUser(name, lastName, age);
         System.out.println("User name -" + name + " added to database");
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> users = userDao.getAllUsers();
 
         users.stream().forEach(System.out::println);
